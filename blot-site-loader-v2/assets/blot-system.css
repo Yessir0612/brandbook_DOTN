@@ -1,0 +1,99 @@
+/* ============================================================
+   BLOT SHARED SYSTEM — CSS
+   Loaded by both index.html and process.html.
+   Covers: theme switcher UI, progressive header blur, and the
+   cross-page organic-blob transition overlay.
+   Relies on the token system (--paper, --ink, --accent, etc.)
+   already defined inline in each page's own <style> block.
+   ============================================================ */
+
+/* ---------------- Theme switcher ---------------- */
+.theme-switch{
+  display:flex; align-items:center; gap:.45rem;
+  font-family:var(--font-mono); font-size:.78rem;
+  margin-right:.4rem;
+}
+.theme-switch button{
+  text-transform:uppercase; letter-spacing:.06em; color:var(--grey);
+  transition:color .3s var(--ease);
+  padding:.15rem 0;
+}
+.theme-switch button[aria-pressed="true"]{ color:var(--accent); }
+.theme-switch button:hover{ color:var(--ink); }
+.theme-switch button[aria-pressed="true"]:hover{ color:var(--accent); }
+.theme-switch-sep{ color:var(--grey-light); font-size:.85em; }
+
+@media (max-width:860px){
+  .site-header .theme-switch{ display:none; } /* desktop-nav-only spot; mobile gets its own copy below */
+}
+
+.mobile-menu .theme-switch{
+  margin-top:.4rem; font-size:1rem;
+}
+.mobile-menu .theme-switch button{ color:rgba(239,237,228,.65); }
+.mobile-menu .theme-switch button[aria-pressed="true"]{ color:var(--paper); text-decoration:underline; text-underline-offset:4px; }
+.mobile-menu .theme-switch-sep{ color:rgba(239,237,228,.4); }
+
+/* ---------------- Header progressive blur ----------------
+   Four stacked layers, each a different blur strength masked to fade
+   out at a different depth. Stacked, they read as one smooth strong→
+   none falloff with no hard edge — not a single blurred rectangle. */
+.header-blur{
+  position:absolute; inset:0 0 auto 0; height:170px;
+  z-index:-1; pointer-events:none; overflow:hidden;
+}
+.header-blur span{
+  position:absolute; inset:0;
+  -webkit-backdrop-filter:blur(var(--hb-blur));
+  backdrop-filter:blur(var(--hb-blur));
+  -webkit-mask-image:var(--hb-mask);
+  mask-image:var(--hb-mask);
+}
+.header-blur span:nth-child(1){
+  --hb-blur:3px;
+  --hb-mask:linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+}
+.header-blur span:nth-child(2){
+  --hb-blur:7px;
+  --hb-mask:linear-gradient(to bottom, #000 0%, #000 40%, transparent 72%);
+}
+.header-blur span:nth-child(3){
+  --hb-blur:13px;
+  --hb-mask:linear-gradient(to bottom, #000 0%, #000 26%, transparent 50%);
+}
+.header-blur span:nth-child(4){
+  --hb-blur:22px;
+  --hb-mask:linear-gradient(to bottom, #000 0%, #000 14%, transparent 32%);
+}
+@media (prefers-reduced-motion: reduce){
+  /* blur itself isn't motion, keep it — nothing to disable here */
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
+  .header-blur{ display:none; } /* unsupported browsers: no blur, header text still reads fine unaided */
+}
+
+/* ---------------- Page transition overlay ----------------
+   A single BLOT mark (the same teardrop used in the loader/footer)
+   expanding from the click point to cover the viewport, then the
+   reverse on the page it lands on. Position/scale driven by JS;
+   the [data-incoming-transition] block below gives a same-frame
+   covering fallback via pure CSS so there's no gap before JS runs. */
+.page-transition{
+  position:fixed; z-index:3000; pointer-events:none;
+  width:110px; height:110px; left:50%; top:50%;
+  transform:translate(-50%,-50%) scale(0);
+  opacity:1;
+}
+.page-transition svg{ width:100%; height:100%; overflow:visible; display:block; }
+.page-transition path{ fill:var(--accent); }
+.page-transition.is-animating{ transition:transform .62s cubic-bezier(.5,0,.2,1); }
+
+html[data-incoming-transition="true"] .page-transition{
+  left:var(--transition-origin-x, 50%);
+  top:var(--transition-origin-y, 50%);
+  transform:translate(-50%,-50%) scale(26); /* generous fixed cover-all, refined by JS the moment it runs */
+}
+
+@media (prefers-reduced-motion: reduce){
+  .page-transition{ display:none; }
+}

@@ -1,0 +1,6 @@
+{
+  "characters": [
+    { "id": "object-02", "name": "Персонаж 01", "color": "object-02_color.webp", "depth": "object-02_depth.webp" },
+    { "id": "shadow-smirk", "name": "Shadow Smirk", "color": "shadow-smirk_color.webp", "depth": "shadow-smirk_depth.webp" }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "objects": [
+    {
+      "id": "object-02",
+      "label": "N\u00ba01",
+      "file": "object-02.bin",
+      "kind": "portrait"
+    },
+    {
+      "id": "object-01",
+      "label": "N\u00ba02",
+      "file": "object-01.bin",
+      "kind": "sculpture"
+    },
+    {
+      "id": "object-03",
+      "label": "N\u00ba03",
+      "file": "object-03.bin",
+      "kind": "sculpture"
+    }
+  ]
+}
